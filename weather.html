@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang = "en">
+
+<head>
+<meta charset="utf-8"/>
+<title>Weather</title>
+<link rel="stylesheet" href="weather.css"> 
+</head>
+
+<body>
+<script>
+//Code from https://stackoverflow.com/questions/48386202/using-callback-to-print-json-data
+function fetchWeather(event){
+    console.log("test");
+
+    const pathToFile = 'https://classes.engineering.wustl.edu/cse330/content/weather_json.php'
+    fetch(pathToFile)
+    .then(res => res.json())
+    .then(weatherCallback)
+    .catch(error => console.error('Error:',error))
+}
+    function weatherCallback (jsonData){
+        let location = document.getElementById("weatherLoc");
+        const locList = document.createElement("location");
+        locList.appendChild(document.createTextNode(jsonData.location.city));
+        locList.appendChild(document.createTextNode(" " + jsonData.location.state));
+        location.appendChild(locList);
+
+        let humidity = document.getElementById("weather-humidity");
+        const newList = document.createElement("humidity");  // creates a node with the tag name li
+        newList.appendChild(document.createTextNode(jsonData.atmosphere.humidity));
+        humidity.appendChild(newList);
+
+        let state = document.getElementById("state");
+        const stateList = document.createElement("State");
+        stateList.appendChild(document.createTextNode(jsonData.location.state));
+        //state.appendChild(stateList);
+
+        let temperature = document.getElementById("weather-temp");
+        const tempList = document.createElement("temperature");
+        tempList.appendChild(document.createTextNode(jsonData.current.temp));
+        temperature.appendChild(tempList);
+
+        let imgCode =  jsonData.tomorrow.code;
+        console.log(imgCode);
+        let tomorrow = document.getElementById("weather-tomorrow").src = `http://us.yimg.com/i/us/nws/weather/gr/${imgCode}ds.png`;
+        const tomorrowList = document.createElement("tomorrow");
+        //tomorrow.appendChild(tomorrowList);
+        
+        let tomorrowCode = jsonData.dayafter.code;
+        console.log(tomorrowCode);
+        let dayAfter = document.getElementById("dayAfter").src = `http://us.yimg.com/i/us/nws/weather/gr/${tomorrowCode}ds.png`;
+        const dayAfterList = document.createElement("dayAfter");
+        dayAfterList.appendChild(document.createTextNode(jsonData.current.temp));
+        //dayAfter.appendChild(dayAfterList);
+   }
+
+</script>
+
+<div class= "weather" id="weatherWidget">
+	<div class = "weather-loc" id = "weatherLoc"> </div>
+	<div class = "weather-humidity" id = "weather-humidity"></div>
+	<div class = "weather-temp" id = "weather-temp"> </div>
+	<img class = "weather-tomorrow" id = "weather-tomorrow" />
+	<img class = "weather-dayaftertomorrow" id = "dayAfter"/>
+</div>
+<form>
+<input type = "submit" id = "button" value = "Get Weather"></input>
+</form>
+<script>
+document.getElementById("button").addEventListener("DOMContentLoaded", fetchWeather(), false);
+</script>
+</body>
+
+</html>
